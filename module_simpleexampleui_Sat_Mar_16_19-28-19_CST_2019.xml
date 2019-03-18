@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_simpleexampleui" default="compile.module.simpleexampleui">
+  <dirname property="module.simpleexampleui.basedir" file="${ant.file.module_simpleexampleui}"/>
+  
+  <property name="module.jdk.home.simpleexampleui" value="${jdk.home.1.8}"/>
+  <property name="module.jdk.bin.simpleexampleui" value="${jdk.bin.1.8}"/>
+  <property name="module.jdk.classpath.simpleexampleui" value="jdk.classpath.1.8"/>
+  
+  <property name="compiler.args.simpleexampleui" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="simpleexampleui.output.dir" value="${module.simpleexampleui.basedir}/out/production/SimpleExampleUI"/>
+  <property name="simpleexampleui.testoutput.dir" value="${module.simpleexampleui.basedir}/out/test/SimpleExampleUI"/>
+  
+  <path id="simpleexampleui.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="simpleexampleui.module.production.classpath">
+    <path refid="${module.jdk.classpath.simpleexampleui}"/>
+  </path>
+  
+  <path id="simpleexampleui.runtime.production.module.classpath">
+    <pathelement location="${simpleexampleui.output.dir}"/>
+  </path>
+  
+  <path id="simpleexampleui.module.classpath">
+    <path refid="${module.jdk.classpath.simpleexampleui}"/>
+    <pathelement location="${simpleexampleui.output.dir}"/>
+  </path>
+  
+  <path id="simpleexampleui.runtime.module.classpath">
+    <pathelement location="${simpleexampleui.testoutput.dir}"/>
+    <pathelement location="${simpleexampleui.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.simpleexampleui">
+    <patternset refid="ignored.files"/>
+    <exclude name="SimpleExampleUI/**"/>
+    <exclude name="SimpleExampleUI/sample/**"/>
+    <exclude name="SimpleExampleUI/resources/**"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.simpleexampleui">
+    <patternset refid="excluded.from.module.simpleexampleui"/>
+  </patternset>
+  
+  <path id="simpleexampleui.module.sourcepath">
+    <dirset dir="${module.simpleexampleui.basedir}">
+      <include name="src"/>
+      <include name="out/production"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.simpleexampleui" depends="compile.module.simpleexampleui.production,compile.module.simpleexampleui.tests" description="Compile module SimpleExampleUI"/>
+  
+  <target name="compile.module.simpleexampleui.production" depends="register.custom.compilers" description="Compile module SimpleExampleUI; production classes">
+    <mkdir dir="${simpleexampleui.output.dir}"/>
+    <javac2 destdir="${simpleexampleui.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.simpleexampleui}/javac">
+      <compilerarg line="${compiler.args.simpleexampleui}"/>
+      <bootclasspath refid="simpleexampleui.module.bootclasspath"/>
+      <classpath refid="simpleexampleui.module.production.classpath"/>
+      <src refid="simpleexampleui.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.simpleexampleui"/>
+    </javac2>
+    
+    <copy todir="${simpleexampleui.output.dir}">
+      <fileset dir="${module.simpleexampleui.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.simpleexampleui.basedir}/out/production">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.simpleexampleui.tests" depends="register.custom.compilers,compile.module.simpleexampleui.production" description="compile module SimpleExampleUI; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.simpleexampleui" description="cleanup module">
+    <delete dir="${simpleexampleui.output.dir}"/>
+    <delete dir="${simpleexampleui.testoutput.dir}"/>
+  </target>
+</project>
